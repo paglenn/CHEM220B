@@ -1,0 +1,21 @@
+Hello World:
+    http://groups.engin.umd.umich.edu/CIS/course.des/cis400/c/hworld.html
+
+Using printf:
+    https://www.udemy.com/blog/c-printf/
+
+Command line arguments:
+    http://www.cprogramming.com/tutorial/c/lesson14.html
+
+Memory allocation:
+    http://www.cplusplus.com/doc/tutorial/dynamic/
+
+Random Numbers with GSL:
+    (18.6) http://www.gnu.org/software/gsl/manual/html_node/Random-number-environment-variables.html
+    (18.13) http://www.gnu.org/software/gsl/manual/html_node/Random-Number-Generator-Examples.html#Random-Number-Generator-Examples
+
+To install gsl on Mac:
+    brew install gsl
+
+Failure to find gsl library on Mac:
+    http://stackoverflow.com/questions/23905661/on-mac-g-fails-to-search-usr-local-include-and-usr-local-lib-by-default

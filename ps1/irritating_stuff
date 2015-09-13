@@ -1,0 +1,27 @@
+
+If you use the GNU Scientific Library random number generator, the
+following information might be handy.
+
+Header file:
+
+#include <gsl/gsl_rng.h>
+
+Declarations:
+
+  const gsl_rng_type * ranT;
+  gsl_rng * ranr;
+
+  gsl_rng_env_setup();
+  ranT = gsl_rng_default;
+  ranr = gsl_rng_alloc (ranT);
+
+Usage:
+
+  double y;
+  y = gsl_rng_uniform(ranr);
+
+
+Compile flags: (I have installed GSL in /sw. Your system might be set
+up differently)
+
+-I/sw/include -L/sw/lib -lgsl -lm
