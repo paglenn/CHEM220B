@@ -63,9 +63,10 @@ int main() {
 	const int tmax = 1./dt ; 
 	double tau = dt * samplingFreq ;  
 	vector<int> counts[3];
-	for(int i = 0 ; i < 3;  i++) {
-		Kvals[i] = 12.*(i+1)*PI/L;
-		counts[i] = vector<int>(tmax,0);
+	for(int kk = 0 ; kk < 3;  kk++) {
+		Kvals[kk] = 12.*(kk+1)*PI/L;
+		counts[kk] = vector<int>(tmax,0);
+		Skbar[kk] = vector<double>(tmax,0.) ; 
 	}
 	samplingFreq = 20; 
 	const int numSamples = ( nsteps - endRescale) / samplingFreq ;  
@@ -86,10 +87,6 @@ int main() {
 
 	// begin simulations 
 	double x, y, z; 
-	for(int kk = 0 ; kk < 3 ; kk++ ) {
-	K = Kvals[kk];	
-	cout << "k = " << K << endl ; 
-
 	for( int cc = 0 ; cc < nconfig ; cc++ ) {
 	Particles system(np, L, rc, temp, f0, K, ti, cc) ; 
 	//cout << "start " << ti << endl ; 
@@ -142,7 +139,7 @@ int main() {
 	double cosky,sinky; 
 	double coskz,sinkz; 
 	cout << " min time separation: " << tau << endl ; 
-	Skbar[kk] = vector<double>(tmax,0.) ; 
+	//cout << numSamples - tmax << endl ; 
 	for(int s = 0 ; s < numSamples - tmax ; s++  ) { 
 		for(int t = 0 ; t < tmax ; t++ ) {
 			for(int ip = 0 ; ip < np ; ip++) {
@@ -154,23 +151,28 @@ int main() {
 				dy = Y[ip][s] - Y[jp][s+t] ; 
 				dz = Z[ip][s] - Z[jp][s+t] ; 
 					
-				coskx = cos(K *dx) ; 
-				//sinkx = sin(K* dx)  ; 
-				cosky = cos(K * dy) ; 
-				//sinky = sin(K* dy)  ; 
-				coskz = cos(K * dz) ; 
-				//sinkz = sin(K* dz)  ; 
+				for(int kk = 0 ; kk < 3 ; kk++ ) {
+						K = Kvals[kk];	
+					//	cout << "k = " << K << endl ; 
 
-				Skbar[kk][t] += coskx ; 
-				Skbar[kk][t] += cosky ; 
-				Skbar[kk][t] += coskz ; 
-				//Skbar[kk][t] += sinkx ; 
-				//Skbar[kk][t] += sinky ; 
-				//Skbar[kk][t] += sinkz ; 
+						coskx = cos(K *dx) ; 
+						//sinkx = sin(K* dx)  ; 
+						cosky = cos(K * dy) ; 
+						//sinky = sin(K* dy)  ; 
+						coskz = cos(K * dz) ; 
+						//sinkz = sin(K* dz)  ; 
 
-				//if (kk == 0 ) counts[t] += 6 ; 
-				counts[kk][t] += 3 ; 
-				//counts[kk][t] += 1 ; 
+						Skbar[kk][t] += coskx ; 
+						Skbar[kk][t] += cosky ; 
+						Skbar[kk][t] += coskz ; 
+						//Skbar[kk][t] += sinkx ; 
+						//Skbar[kk][t] += sinky ; 
+						//Skbar[kk][t] += sinkz ; 
+
+						//if (kk == 0 ) counts[t] += 6 ; 
+						counts[kk][t] += 3 ; 
+						//counts[kk][t] += 1 ; 
+				}
 			}
 			}
 			//cout << counts[t] << endl ; 
@@ -179,8 +181,8 @@ int main() {
 	
 	} // end loop over configs 
 
+
 	//return 0 ; 
-	} // end loop over k's 
 
 	// velocity correlation function 
 
