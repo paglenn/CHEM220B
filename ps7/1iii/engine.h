@@ -127,7 +127,6 @@ void Particles::ComputeForces(double t) {
 	double _L = 1./L ; 
 	double _rc2 = 1./rc2 ; 
 	double _rc6 = _rc2*_rc2*_rc2 ; 
-	double sinkx, coskx; 
 	PE = 0. ;
 
 	// L-J potential forces  

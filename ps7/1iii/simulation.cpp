@@ -62,10 +62,10 @@ int main() {
 	vector<double> Skbar[3] ;
 	const int tmax = 1./dt ; 
 	double tau = dt * samplingFreq ;  
-	vector<double> counts[3];
-	vector<double> counts(tmax, 0.) ; 
+	vector<int> counts[3];
 	for(int i = 0 ; i < 3;  i++) {
 		Kvals[i] = 12.*(i+1)*PI/L;
+		counts[i] = vector<int>(tmax,0);
 	}
 	samplingFreq = 20; 
 	const int numSamples = ( nsteps - endRescale) / samplingFreq ;  
@@ -162,15 +162,15 @@ int main() {
 				//sinkz = sin(K* dz)  ; 
 
 				Skbar[kk][t] += coskx ; 
-				//Skbar[kk][t] += cosky ; 
-				//Skbar[kk][t] += coskz ; 
+				Skbar[kk][t] += cosky ; 
+				Skbar[kk][t] += coskz ; 
 				//Skbar[kk][t] += sinkx ; 
 				//Skbar[kk][t] += sinky ; 
 				//Skbar[kk][t] += sinkz ; 
 
 				//if (kk == 0 ) counts[t] += 6 ; 
-				//if (kk == 0 ) counts[t] += 3 ; 
-				if (kk == 0 ) counts[t] += 1 ; 
+				counts[kk][t] += 3 ; 
+				//counts[kk][t] += 1 ; 
 			}
 			}
 			//cout << counts[t] << endl ; 
@@ -188,9 +188,9 @@ int main() {
 
 	for(int t = 0 ; t < tmax; t++) { 
 		double tau = dt * samplingFreq ;  
-		Skbar[0][t] /= (double )(2*N * counts[t])  ; 
-		Skbar[1][t] /= (double )(2*N * counts[t]) ; 
-		Skbar[2][t] /= (double )(2*N * counts[t]) ; 
+		Skbar[0][t] /= (double )(2 * counts[0][t])  ; 
+		Skbar[1][t] /= (double )(2 * counts[1][t]) ; 
+		Skbar[2][t] /= (double )(2 * counts[2][t]) ; 
 		SkFile << t*tau ;  
 		SkFile << setw(15) << Skbar[0][t] ;  
 		SkFile << setw(15) << Skbar[1][t] ;  
