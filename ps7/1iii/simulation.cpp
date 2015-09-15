@@ -55,12 +55,16 @@ int main() {
 		
 	}
 	nsteps = ceil((tfinal - ti)/dt) + endRescale; 
+	samplingFreq = 10; 
+	const int numSamples = ( nsteps - endRescale) / samplingFreq ;  
+	const int N = np ; 
 	d2 = d*d ; 
 	L = pow(np/rho,1./3) * d ;  
 	double Kvals[3] ; 
 	double PI = acos(-1) ; 
 	vector<double> Skbar[3] ;
-	const int tmax = 1./dt ; 
+	const int tmax = 100; 
+	cout << tmax << endl ; 
 	double tau = dt * samplingFreq ;  
 	vector<int> counts[3];
 	for(int kk = 0 ; kk < 3;  kk++) {
@@ -68,9 +72,6 @@ int main() {
 		counts[kk] = vector<int>(tmax,0);
 		Skbar[kk] = vector<double>(tmax,0.) ; 
 	}
-	samplingFreq = 20; 
-	const int numSamples = ( nsteps - endRescale) / samplingFreq ;  
-	const int N = np ; 
 	vector< vector<double> > Vx(np, vector<double>());
 	vector< vector<double> > Vy(np, vector<double>() ); 
 	vector< vector<double> > Vz(np, vector<double>()) ; 
@@ -106,9 +107,9 @@ int main() {
 				for(iwatch = 0 ; iwatch < np; iwatch ++ ) {
 					
 					vector<double> ipos = system.GetPosition(iwatch) ; 
-					x = ipos[0] - L*round(ipos[0]/L) ;
-					y = ipos[1] - L*round(ipos[1]/L) ;
-					z = ipos[2] - L*round(ipos[2]/L); 
+					//x = ipos[0] - L*round(ipos[0]/L) ;
+					//y = ipos[1] - L*round(ipos[1]/L) ;
+					//z = ipos[2] - L*round(ipos[2]/L); 
 					/*
 					if (kk == 0 && cc == 0 ){
 					 coorFile << 1 << setw(15) << x << '\t' << y << '\t' << z << endl; 
@@ -142,6 +143,7 @@ int main() {
 	//cout << numSamples - tmax << endl ; 
 	for(int s = 0 ; s < numSamples - tmax ; s++  ) { 
 		for(int t = 0 ; t < tmax ; t++ ) {
+			for (int kk = 0 ; kk < 3 ; kk++) counts[kk][t] += 3 ; 
 			for(int ip = 0 ; ip < np ; ip++) {
 				for(int jp = 0 ; jp < np ; jp++) {
 				// averaging starts here 
@@ -150,6 +152,9 @@ int main() {
 				dx = X[ip][s] - X[jp][s+t] ; 
 				dy = Y[ip][s] - Y[jp][s+t] ; 
 				dz = Z[ip][s] - Z[jp][s+t] ; 
+				dx -= L * round(dx/L) ; 
+				dy -= L * round(dy/L) ; 
+				dz -= L * round(dz/L) ; 
 					
 				for(int kk = 0 ; kk < 3 ; kk++ ) {
 						K = Kvals[kk];	
@@ -170,7 +175,6 @@ int main() {
 						//Skbar[kk][t] += sinkz ; 
 
 						//if (kk == 0 ) counts[t] += 6 ; 
-						counts[kk][t] += 3 ; 
 						//counts[kk][t] += 1 ; 
 				}
 			}
@@ -190,9 +194,9 @@ int main() {
 
 	for(int t = 0 ; t < tmax; t++) { 
 		double tau = dt * samplingFreq ;  
-		Skbar[0][t] /= (double )(2 * counts[0][t])  ; 
-		Skbar[1][t] /= (double )(2 * counts[1][t]) ; 
-		Skbar[2][t] /= (double )(2 * counts[2][t]) ; 
+		Skbar[0][t] /= (double )(2 * np * counts[0][t])  ; 
+		Skbar[1][t] /= (double )(2 * np * counts[1][t]) ; 
+		Skbar[2][t] /= (double )(2 * np * counts[2][t]) ; 
 		SkFile << t*tau ;  
 		SkFile << setw(15) << Skbar[0][t] ;  
 		SkFile << setw(15) << Skbar[1][t] ;  
