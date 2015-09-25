@@ -39,9 +39,9 @@ int main()  {
 	var = 2* D * dt  ; 
 	sigma = sqrt(var) ;
 	kappa = 0.0 ; 
-	nsteps = 1e7 ; 
+	nsteps = 5e6 ; 
 	
-	int samplingFreq = nsteps / 100 ; 
+	int samplingFreq = 100 ; 
 	
 	for(int k = 0 ; k < 12 ; k++) { 
 		double f0 = k/2.0 ; 
@@ -49,50 +49,26 @@ int main()  {
 		vector<double> avg(2,0.0) ; 
 
 		for(int i = 0 ; i < nsteps ; i++ ) { 
-			t = i * dt ; 
-			kappa = kappa + F(f0, kappa)* _gamma *dt + R(sigma)  ; 
 
-			if ( i % samplingFreq == 0 ) {  
-				double kappa2 = kappa * kappa; 
-				avg[0] += kappa2; 
-				avg[1] += kappa2*kappa2 ; 
+			for(int j = 0 ; j < samplingFreq; j++ ) {
+				t = i * dt ; 
+				kappa = kappa + F(f0, kappa)* _gamma *dt + R(sigma)  ; 
 			}
+
+			double kappa2 = kappa * kappa; 
+			avg[0] += kappa2; 
+			avg[1] += kappa2*kappa2 ; 
+			TC += 1 ; 
 		}	
+
 		fout << setw(7) << f0 ; 
-		fout << setw(15) << avg[0] ; 
-		fout << setw(15) << avg[1] ; 
+		fout << setw(15) << avg[0] / (double) TC ; 
+		fout << setw(15) << avg[1] / (double) TC ; 
 		fout << endl ; 
 	}
 
 	fout.close(); 
 	
-	// write histogram 
-	/*
-	fout.open("hist.dat");
-	double dq = 4./nbins ; 
-	double histIntegral = 0.0; 
-	for(int b = 0 ; b < nbins ; b++ ) {
-
-		histIntegral += qHist[b] ; 
-	
-	}
-	histIntegral *= dq ;
-
-	double _I = 1./histIntegral ; 
-
-	for(int b = 0 ; b < nbins ; b++) { 
-	
-		if ( qHist[b] > 100) {
-			double q_center = 4* (b + 0.5) / nbins - 2.0 ;  
-			fout << q_center; 
-			fout << setw(15) << qHist[b] * _I  ; 
-			fout << endl ; 
-		}
-
-	}
-	fout.close() ; 
-	*/
-
 
 	return 0 ; 
 	

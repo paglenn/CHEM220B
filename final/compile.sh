@@ -1,3 +1,3 @@
 #!/bin/bash 
 
-g++ -O3 -std=c++0x -o euler euler.cpp  
+g++ euler.cpp -O3 -o euler  
